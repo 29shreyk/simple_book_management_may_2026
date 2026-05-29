@@ -17,7 +17,7 @@ const UpdateBook = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:5001/update/${book.id}`, values)
+        axios.put(`${import.meta.env.VITE_API_URL}/update/${book.id}`, values)
             .then(res => navigate('/'))
             .catch(err => console.log(err));
     }

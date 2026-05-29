@@ -80,7 +80,16 @@ Ensure the following are installed on your system:
    npm install
    ```
 
-3. **Start the React development server:**
+3. **Configure the backend URL (optional):**
+
+   By default the frontend points to `http://localhost:5001`. If your backend runs on a different host or port, create a `.env` file in the `Client/` directory:
+
+   ```bash
+   # Client/.env
+   VITE_API_URL=http://localhost:5001
+   ```
+
+4. **Start the React development server:**
 
    ```bash
    npm run dev

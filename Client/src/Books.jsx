@@ -13,7 +13,7 @@ const Books = () => {
     };
 
     const handleDelete = (bookId) => {
-        axios.delete(`http://localhost:5001/delete/${bookId}`)
+        axios.delete(`${import.meta.env.VITE_API_URL}/delete/${bookId}`)
             .then(() => {
                 setBooks(books.filter(book => book.id !== bookId));
             })
@@ -21,7 +21,7 @@ const Books = () => {
     };
 
     useEffect(() => {
-        axios.get('http://localhost:5001')
+        axios.get(`${import.meta.env.VITE_API_URL}`)
             .then(res => {
                 if (Array.isArray(res.data)) {
                     setBooks(res.data);

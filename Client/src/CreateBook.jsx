@@ -12,7 +12,7 @@ const CreateBook = () => { // defined the functional component named createbook
     const navigate = useNavigate() // navigate to the home page
     const handleSubmit= (e) =>{    // event handler to handle form submission
         e.preventDefault()        // prevent default form submission
-        axios.post('http://localhost:5001/create', values) // sends the post request to the server
+        axios.post(`${import.meta.env.VITE_API_URL}/create`, values) // sends the post request to the server
         .then(res => navigate('/'))                        // on successful response user will be navigated to the home page 
         .catch(err => console.log(err))                    //logs error occur during request
     }
