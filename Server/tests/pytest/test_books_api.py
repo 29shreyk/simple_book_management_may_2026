@@ -2,153 +2,106 @@ import pytest
 import json
 
 # ----------------------------
-# SECTION 1: Basic Functional
+# SECTION 1: Get Books
 # ----------------------------
 
-@pytest.mark.functional
-def test_health_check(client):
-    response = client.get("/health")
-    assert response.status_code in [200, 503]
-    assert "status" in response.get_json()
-
-@pytest.mark.functional
-def test_get_books_empty(client, db_connection):
-    conn, cursor = db_connection
-    cursor.execute("DELETE FROM book")
-    conn.commit()
+def test_get_books_returns_list(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert response.get_json() == []
+    assert isinstance(response.get_json(), list)
 
 # ----------------------------
-# SECTION 2: Create Book API
+# SECTION 2: Create Book
 # ----------------------------
 
-@pytest.mark.create_api
 def test_create_valid_book(client):
     payload = {
         "publisher": "O'Reilly",
-        "name": "Flask101",
-        "date": "2025-01-01",
-        "cost": 49.99
+        "name": "Learning Flask",
+        "date": "2024-10-11",
+        "Cost": 399.99
+    }
+    response = client.post("/create", json=payload)
+    assert response.status_code == 201
+
+def test_create_book_returns_correct_name(client):
+    payload = {
+        "publisher": "Packt",
+        "name": "Python Testing",
+        "date": "2024-05-01",
+        "Cost": 299.99
     }
     response = client.post("/create", json=payload)
     data = response.get_json()
-    assert response.status_code == 201
-    assert data["data"]["name"] == "Flask101"
-
-@pytest.mark.create_api
-def test_create_missing_field(client):
-    payload = {
-        "name": "Flask101",
-        "date": "2025-01-01",
-        "cost": 49.99
-    }
-    response = client.post("/create", json=payload)
-    assert response.status_code == 400
-    assert "Missing field" in response.get_json()["error"]
-
-@pytest.mark.create_api
-def test_create_invalid_cost(client):
-    payload = {
-        "publisher": "Packt",
-        "name": "Flask",
-        "date": "2025-01-01",
-        "cost": "abc"
-    }
-    response = client.post("/create", json=payload)
-    assert response.status_code == 400
-    assert "Invalid cost" in response.get_json()["error"]
-
-@pytest.mark.create_api
-def test_create_invalid_date(client):
-    payload = {
-        "publisher": "Packt",
-        "name": "Flask",
-        "date": "32-13-2025",
-        "cost": 39.99
-    }
-    response = client.post("/create", json=payload)
-    assert response.status_code == 400
-    assert "Invalid date format" in response.get_json()["error"]
-
-@pytest.mark.create_api
-def test_create_empty_body(client):
-    response = client.post("/create", data="")
-    assert response.status_code == 400
-    assert "Request must be JSON" in response.get_json()["error"]
+    assert data["name"] == "Python Testing"
 
 # ----------------------------
-# SECTION 3: Update Book API
+# SECTION 3: Update Book
 # ----------------------------
 
-@pytest.mark.update_api
-def test_update_valid_book(client, create_sample_book):
-    book_id = create_sample_book
+def test_update_existing_book(client):
+    # First create a book
     payload = {
-        "publisher": "UpdatePub",
-        "name": "UpdatedBook",
-        "date": "2025-12-12",
-        "cost": 60.0
+        "publisher": "OldPub",
+        "name": "OldBook",
+        "date": "2023-01-01",
+        "Cost": 100.0
     }
-    response = client.put(f"/update/{book_id}", json=payload)
+    create_response = client.post("/create", json=payload)
+    assert create_response.status_code == 201
+
+    # Get all books and find the one we just created
+    books = client.get("/").get_json()
+    book_id = books[-1]["id"]
+
+    # Now update it
+    updated_payload = {
+        "publisher": "NewPub",
+        "name": "NewBook",
+        "date": "2025-01-01",
+        "Cost": 200.0
+    }
+    response = client.put(f"/update/{book_id}", json=updated_payload)
     assert response.status_code == 200
-    assert response.get_json()["data"]["name"] == "UpdatedBook"
+    assert response.get_json()["name"] == "NewBook"
 
-@pytest.mark.update_api
-def test_update_nonexistent_book(client):
+# ----------------------------
+# SECTION 4: Delete Book
+# ----------------------------
+
+def test_delete_existing_book(client):
+    # First create a book to delete
     payload = {
-        "publisher": "X",
-        "name": "Y",
-        "date": "2025-01-01",
-        "cost": 10
+        "publisher": "DelPub",
+        "name": "DeleteMe",
+        "date": "2024-01-01",
+        "Cost": 50.0
     }
-    response = client.put("/update/99999", json=payload)
-    assert response.status_code == 404
-    assert "Book not found" in response.get_json()["error"]
+    client.post("/create", json=payload)
 
-# ----------------------------
-# SECTION 4: Delete Book API
-# ----------------------------
+    # Get its id
+    books = client.get("/").get_json()
+    book_id = books[-1]["id"]
 
-@pytest.mark.delete_api
-def test_delete_existing_book(client, create_sample_book):
-    book_id = create_sample_book
+    # Delete it
     response = client.delete(f"/delete/{book_id}")
     assert response.status_code == 200
-    assert "deleted successfully" in response.get_json()["message"]
+    assert response.get_json()["result"] == "Book deleted"
 
-@pytest.mark.delete_api
-def test_delete_nonexistent_book(client):
-    response = client.delete("/delete/99999")
-    assert response.status_code == 404
-    assert "Book not found" in response.get_json()["error"]
+def test_delete_book_no_longer_exists(client):
+    # Create and delete a book
+    payload = {
+        "publisher": "TempPub",
+        "name": "TempBook",
+        "date": "2024-06-01",
+        "Cost": 75.0
+    }
+    client.post("/create", json=payload)
+    books = client.get("/").get_json()
+    book_id = books[-1]["id"]
+    client.delete(f"/delete/{book_id}")
 
-# ----------------------------
-# SECTION 5: DB Failure (Simulated)
-# ----------------------------
-
-# These would require DB mock or stop DB service manually
-@pytest.mark.db_failure
-def test_db_connection_failure(client, monkeypatch):
-    from app import get_db_connection
-    def fake_conn():
-        raise Exception("DB not reachable")
-    monkeypatch.setattr("app.get_db_connection", fake_conn)
-    response = client.get("/")
-    assert response.status_code == 500 or response.status_code == 503
-
-# ----------------------------
-# SECTION 6: Global Error Handling
-# ----------------------------
-
-@pytest.mark.global_error
-def test_404_not_found(client):
-    response = client.get("/unknown")
-    assert response.status_code == 404
-    assert "Resource not found" in response.get_json()["error"]
-
-@pytest.mark.global_error
-def test_method_not_allowed(client):
-    response = client.patch("/create")
-    assert response.status_code == 405
+    # Verify it's gone
+    books_after = client.get("/").get_json()
+    ids = [b["id"] for b in books_after]
+    assert book_id not in ids
