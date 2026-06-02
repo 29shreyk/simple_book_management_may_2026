@@ -335,6 +335,246 @@ pytest tests/pytest
 
 ---
 
+# 🧪 API Testing with Pytest
+
+The project includes a Pytest test suite to validate backend API functionality and database operations.
+
+## Prerequisites
+
+Before running tests, ensure all required Python dependencies are installed.
+
+```bash
+cd Server
+
+pip install -r requirements.txt
+```
+
+or
+
+```bash
+pip install pytest flask flask-cors
+```
+
+---
+
+## Project Test Structure
+
+```text
+Server/
+└── tests/
+    └── pytest/
+        ├── conftest.py
+        ├── test_books_api.py
+        ├── conftest_postgres_backup.py
+        └── test_books_api_backup.py
+```
+
+---
+
+## Run All Tests
+
+Navigate to the server directory:
+
+```bash
+cd Server
+```
+
+Run the complete test suite:
+
+```bash
+pytest
+```
+
+---
+
+## Run Tests with Verbose Output
+
+```bash
+pytest -v
+```
+
+Example output:
+
+```text
+test_books_api.py::test_get_books PASSED
+test_books_api.py::test_create_book PASSED
+test_books_api.py::test_update_book PASSED
+test_books_api.py::test_delete_book PASSED
+```
+
+---
+
+## Run a Specific Test File
+
+```bash
+pytest tests/pytest/test_books_api.py
+```
+
+---
+
+## Run a Specific Test Case
+
+```bash
+pytest tests/pytest/test_books_api.py::test_create_book
+```
+
+Example:
+
+```bash
+pytest tests/pytest/test_books_api.py::test_get_books
+```
+
+---
+
+## Run Tests with Detailed Summary
+
+```bash
+pytest -ra
+```
+
+---
+
+## Generate Coverage Report (Optional)
+
+Install coverage package:
+
+```bash
+pip install pytest-cov
+```
+
+Run:
+
+```bash
+pytest --cov=.
+```
+
+Detailed coverage report:
+
+```bash
+pytest --cov=. --cov-report=term-missing
+```
+
+---
+
+## What the Tests Validate
+
+The Pytest suite verifies:
+
+### API Functionality
+
+- Fetch all books
+- Fetch book by ID
+- Create a new book
+- Update an existing book
+- Delete a book
+
+### Database Operations
+
+- SQLite database connectivity
+- Record insertion
+- Record updates
+- Record deletion
+- Data integrity
+
+### Response Validation
+
+- Correct HTTP status codes
+- Expected JSON responses
+- Proper error handling
+
+---
+
+## Expected Result
+
+A successful test run should produce output similar to:
+
+```text
+================== test session starts ==================
+
+collected 4 items
+
+test_books_api.py ....                         [100%]
+
+================== 4 passed in 1.23s ==================
+```
+
+---
+
+## Troubleshooting
+
+### ModuleNotFoundError
+
+Ensure all dependencies are installed:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Database Errors
+
+Make sure the SQLite database has been initialized by running the Flask server once:
+
+```bash
+python app.py
+```
+
+---
+
+### Import Errors
+
+Run tests from the Server directory:
+
+```bash
+cd Server
+
+pytest
+```
+
+instead of running them from the project root.
+
+---
+
+## Recommended Testing Workflow
+
+### 1. Start Backend
+
+```bash
+cd Server
+
+python app.py
+```
+
+### 2. Run API Tests
+
+```bash
+pytest -v
+```
+
+### 3. Start Frontend
+
+```bash
+cd Client
+
+npm run dev
+```
+
+### 4. Run Playwright E2E Tests
+
+```bash
+npx playwright test
+```
+
+### 5. View Playwright Report
+
+```bash
+npx playwright show-report
+```
+
+This workflow validates both the backend APIs (Pytest) and the complete user workflow through the browser (Playwright).
+
+
 # 🎭 End-to-End Testing with Playwright
 
 The project includes Playwright-based end-to-end (E2E) tests to validate the complete workflow of the application through the browser.
