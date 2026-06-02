@@ -1,223 +1,529 @@
-# Flask CRUD App with SQLite & React
+# 📚 Simple Book Management System (SQLite Edition)
 
-## Description
+A full-stack Book Management System built using **React (Vite)** for the frontend and **Flask + SQLite** for the backend.
 
-This is a simple Flask CRUD application that manages a list of books stored in a **SQLite** database. The app allows users to create, read, update, and delete books through a React frontend.
+This project allows users to perform complete CRUD operations (Create, Read, Update, Delete) on books through a clean web interface. The application has been enhanced by replacing PostgreSQL with SQLite, making setup significantly easier and eliminating the need for an external database server.
 
-## Project Structure
+---
 
-```
-simple_book_management/
-├── Client/                         # React frontend
-│   ├── public/
+## ✨ Features
+
+* Add new books
+* View all books
+* Update existing books
+* Delete books
+* RESTful Flask API
+* SQLite database integration
+* Environment variable based API configuration
+* Responsive React frontend
+* Automated database initialization
+* API testing support with Pytest
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React
+* Vite
+* JavaScript
+* CSS
+
+### Backend
+
+* Flask
+* SQLite3
+* Python
+
+### Testing
+
+* Pytest
+
+---
+
+# 📂 Project Structure
+
+```text
+simple_book_management_may_2026/
+│
+├── Client/
 │   ├── src/
+│   ├── public/
+│   ├── .env.example
 │   ├── package.json
-│   └── README.md
-├── Server/                         # Flask + SQLite backend
+│   └── vite.config.js
+│
+├── Server/
 │   ├── app.py
-│   ├── books.db                    # SQLite database file (auto-created)
-│   ├── requirements.txt
-│   ├── venv/
+│   ├── books.db
+│   ├── setup_database.sql
+│   ├── Playwright_Test_data.py
 │   └── tests/
+│       └── pytest/
+│
 └── README.md
 ```
 
-## Prerequisites
+---
 
-Ensure the following are installed on your system:
+# 🚀 Getting Started
 
-- **Python 3.8+**
-- **Node.js 16+** (for React frontend)
-- **pip** (Python package manager)
-- **npm** (Node package manager)
-
-> No external database installation required — SQLite is built into Python.
-
-## Backend Setup (Flask + SQLite)
-
-1. **Navigate to the server directory:**
-
-   ```bash
-   cd Server
-   ```
-
-2. **Create and activate a virtual environment:**
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate        # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install Python dependencies:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run the Flask application:**
-
-   ```bash
-   python3 app.py
-   # Or using the venv directly:
-   venv/bin/python3 app.py
-   ```
-
-   The backend will start on **http://localhost:5001**
-
-   The `books.db` SQLite file is created automatically on first run — no manual database setup needed.
-
-## Frontend Setup (React)
-
-1. **Navigate to the client directory:**
-
-   ```bash
-   cd Client
-   ```
-
-2. **Install Node.js dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configure the backend URL (optional):**
-
-   By default the frontend points to `http://localhost:5001`. If your backend runs on a different host or port, create a `.env` file in the `Client/` directory:
-
-   ```bash
-   # Client/.env
-   VITE_API_URL=http://localhost:5001
-   ```
-
-4. **Start the React development server:**
-
-   ```bash
-   npm run dev
-   ```
-
-   The frontend will start on **http://localhost:5173**
-
-## Usage
-
-1. Start the backend server (Flask on port **5001**)
-2. Start the frontend client (React on port **5173**)
-3. Open your browser and navigate to **http://localhost:5173**
-
-You should see the book management interface where you can:
-
-- View all books
-- Add new books
-- Edit existing books
-- Delete books
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/` | Retrieve all books |
-| `POST` | `/create` | Create a new book |
-| `PUT` | `/update/<id>` | Update a book by ID |
-| `DELETE` | `/delete/<id>` | Delete a book by ID |
-
-### Example Requests
-
-#### Get All Books
-```
-GET http://localhost:5001/
-```
-
-#### Create a Book
-```
-POST http://localhost:5001/create
-Content-Type: application/json
-
-{
-  "publisher": "O'Reilly",
-  "name": "Learning Flask",
-  "date": "2024-10-11",
-  "Cost": 399.99
-}
-```
-
-#### Update a Book
-```
-PUT http://localhost:5001/update/1
-Content-Type: application/json
-
-{
-  "publisher": "Updated Publisher",
-  "name": "Updated Book Name",
-  "date": "2024-12-01",
-  "Cost": 499.99
-}
-```
-
-#### Delete a Book
-```
-DELETE http://localhost:5001/delete/1
-```
-
-## Technologies Used
-
-### Backend
-- **Flask** — Web framework
-- **Flask-CORS** — Cross-Origin Resource Sharing
-- **SQLite** — Lightweight file-based database (built into Python)
-
-### Frontend
-- **React** — UI framework
-- **Axios** — HTTP client for API calls
-- **Bootstrap** — Styling
-
-## Testing
-
-### Pytest (Unit Tests)
+## 1. Clone Repository
 
 ```bash
-bash Server/run-pytest.sh
+git clone https://github.com/29shreyk/simple_book_management_may_2026.git
+
+cd simple_book_management_may_2026
 ```
 
-### Newman (API Tests)
+---
+
+# ⚙️ Backend Setup
+
+Navigate to server directory:
 
 ```bash
-cd Server/tests/postman_newman
-./run-newman-tests.sh
+cd Server
 ```
 
-### Playwright (E2E Tests)
+## Create Virtual Environment
+
+### Windows
+
+```bash
+python -m venv venv
+
+venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+python3 -m venv venv
+
+source venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+If requirements.txt is unavailable:
+
+```bash
+pip install flask flask-cors pytest
+```
+
+---
+
+## Run Backend Server
+
+```bash
+python app.py
+```
+
+Server starts on:
+
+```text
+http://localhost:5001
+```
+
+### Important
+
+The SQLite database (`books.db`) and required table are automatically created when the server starts for the first time.
+
+No manual database setup is required.
+
+---
+
+# 🎨 Frontend Setup
+
+Open a new terminal.
+
+Navigate to client directory:
 
 ```bash
 cd Client
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+---
+
+## Configure Environment Variables
+
+Create a `.env` file inside the Client folder.
+
+```env
+VITE_API_URL=http://localhost:5001
+```
+
+You may also copy from:
+
+```bash
+cp .env.example .env
+```
+
+or create manually on Windows.
+
+---
+
+## Start Frontend
+
+```bash
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 🔄 Running the Application
+
+### Terminal 1
+
+```bash
+cd Server
+
+python app.py
+```
+
+### Terminal 2
+
+```bash
+cd Client
+
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 📡 API Endpoints
+
+## Get All Books
+
+```http
+GET /books
+```
+
+---
+
+## Get Book By ID
+
+```http
+GET /books/<id>
+```
+
+---
+
+## Add Book
+
+```http
+POST /books
+```
+
+Request Body:
+
+```json
+{
+  "Title": "Atomic Habits",
+  "Author": "James Clear",
+  "Genre": "Self Help",
+  "Cost": 499
+}
+```
+
+---
+
+## Update Book
+
+```http
+PUT /books/<id>
+```
+
+Request Body:
+
+```json
+{
+  "Title": "Atomic Habits",
+  "Author": "James Clear",
+  "Genre": "Self Help",
+  "Cost": 599
+}
+```
+
+---
+
+## Delete Book
+
+```http
+DELETE /books/<id>
+```
+
+---
+
+# 🧪 Running Tests
+
+Navigate to:
+
+```bash
+cd Server
+```
+
+Run:
+
+```bash
+pytest
+```
+
+Or:
+
+```bash
+pytest tests/pytest
+```
+
+---
+
+# 🔥 Improvements Over Original Repository
+
+### Database Migration
+
+* Migrated from PostgreSQL to SQLite.
+* Removed dependency on external database servers.
+* Simplified setup process.
+
+### Automatic Initialization
+
+* Database creation automated.
+* Table creation automated.
+* No manual SQL execution required.
+
+### Environment Configuration
+
+* Added Vite environment variable support.
+* API URLs are configurable via `.env`.
+
+### Testing Improvements
+
+* Updated test suite for SQLite compatibility.
+* Simplified testing workflow.
+
+### Better Developer Experience
+
+* Faster project setup.
+* Cross-platform compatibility.
+* Reduced installation complexity.
+
+---
+
+# 🎭 End-to-End Testing with Playwright
+
+The project includes Playwright-based end-to-end (E2E) tests to validate the complete workflow of the application through the browser.
+
+## Prerequisites
+
+Make sure both backend and frontend servers are running.
+
+### Terminal 1 - Backend
+
+```bash
+cd Server
+
+python app.py
+```
+
+Backend should be available at:
+
+```text
+http://localhost:5001
+```
+
+### Terminal 2 - Frontend
+
+```bash
+cd Client
+
+npm install
+
+npm run dev
+```
+
+Frontend should be available at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Install Playwright
+
+Navigate to the Playwright test directory (or wherever Playwright is configured).
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Install Playwright browsers:
+
+```bash
+npx playwright install
+```
+
+---
+
+## Generate Sample Test Data (Optional)
+
+The repository includes a utility script for populating the database with sample book records.
+
+```bash
+cd Server
+
+python Playwright_Test_data.py
+```
+
+This creates test data in the SQLite database that can be used during Playwright test execution.
+
+---
+
+## Run All Playwright Tests
+
+```bash
 npx playwright test
 ```
 
-Test reports are located in:
-- `Server/tests/pytest/pytest-report.json`
-- `Server/tests/postman_newman/newman-report.html`
-- `Client/playwright-report/index.html`
+---
 
-## Troubleshooting
+## Run a Specific Test
 
-### Backend won't start — module not found
-Make sure the virtual environment is activated before running:
 ```bash
-source Server/venv/bin/activate
-python3 Server/app.py
+npx playwright test <test-file-name>
 ```
 
-### Frontend can't connect to backend
-- Verify the Flask server is running on port **5001**
-- Check that CORS is enabled (it is by default via `flask-cors`)
+Example:
 
-### Virtual environment issues
 ```bash
-# Recreate the venv if needed
-rm -rf Server/venv
-python3 -m venv Server/venv
-source Server/venv/bin/activate
-pip install -r Server/requirements.txt
+npx playwright test book-management.spec.js
 ```
 
-## License
+---
 
-This project is for educational purposes.
+## Run Tests in Headed Mode
+
+To visually watch browser actions:
+
+```bash
+npx playwright test --headed
+```
+
+---
+
+## Debug Playwright Tests
+
+```bash
+npx playwright test --debug
+```
+
+This launches Playwright Inspector and allows step-by-step debugging.
+
+---
+
+## View Playwright Test Report
+
+After test execution:
+
+```bash
+npx playwright show-report
+```
+
+An interactive HTML report will open in your browser.
+
+---
+
+## Playwright Test Coverage
+
+The Playwright suite validates:
+
+- Application launch
+- Book creation workflow
+- Book update workflow
+- Book deletion workflow
+- Form validations
+- UI interactions
+- End-to-end CRUD operations
+
+---
+
+## Recommended Testing Workflow
+
+1. Start Backend Server
+2. Start Frontend Server
+3. Generate Sample Data (Optional)
+4. Run Pytest API Tests
+5. Run Playwright E2E Tests
+6. Review Playwright HTML Report
+
+```bash
+# Backend
+cd Server
+python app.py
+
+# Frontend
+cd Client
+npm run dev
+
+# API Tests
+pytest
+
+# E2E Tests
+npx playwright test
+
+# Report
+npx playwright show-report
+```
+
+
+# 📸 Future Enhancements
+
+* Search books by title
+* Filter books by genre
+* Pagination support
+* User authentication
+* Book cover image upload
+* Docker deployment
+* CI/CD integration
+
+---
+
+# 👨‍💻 Author
+
+**Shrey K**
+
+GitHub: https://github.com/29shreyk
+
+---
+
+# 📜 License
+
+This project is intended for educational and learning purposes.
