@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  backend:
+    image: shrey3614/book-backend:latest
+    ports:
+      - "5001:5001"
+    container_name: flask_backend
+
+  frontend:
+    image: shrey3614/book-frontend:latest
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    container_name: react_frontend
+    environment:
+      - VITE_API_URL=http://localhost:5001

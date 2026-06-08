@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./Server
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./Server:/app
+    container_name: flask_backend
+
+  frontend:
+    build: ./Client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Client:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    container_name: react_frontend
+    environment:
+      - VITE_API_URL=http://localhost:5001
